@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>Retail Guardian · Simple Business Helper</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Font Awesome for friendly icons (optional) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <h1><i class="fas fa-store"></i> Retail Guardian</h1>
+      <p class="guest-badge"><i class="fas fa-user"></i> Guest Mode · Data saved this session</p>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="tab-nav">
+      <button class="tab-btn active" data-tab="wizard"><i class="fas fa-question-circle"></i> Guide</button>
+      <button class="tab-btn" data-tab="calculators"><i class="fas fa-calculator"></i> Calculators</button>
+      <button class="tab-btn" data-tab="dashboard"><i class="fas fa-chart-pie"></i> Dashboard</button>
+      <button class="tab-btn" data-tab="ai"><i class="fas fa-robot"></i> Ask AI</button>
+    </nav>
+
+    <!-- 1. GUIDED WIZARD SECTION -->
+    <section id="wizard" class="tab-content active">
+      <div class="card wizard-card">
+        <h2><i class="fas fa-compass"></i> Step-by-Step Guide</h2>
+        <p class="help-text">Answer these questions to understand your profit.</p>
+        
+        <div id="wizard-container">
+          <!-- Step indicators -->
+          <div class="step-indicator">
+            <span class="step active">1</span>
+            <span class="step">2</span>
+            <span class="step">3</span>
+            <span class="step">4</span>
+          </div>
+
+          <form id="wizard-form">
+            <!-- Step 1: Opening Stock -->
+            <div class="wizard-step" data-step="1">
+              <label for="wiz-opening">📦 Goods you had before selling (Opening Stock)</label>
+              <p class="example">Example: If you had goods worth ₦10,000, type 10000</p>
+              <input type="number" id="wiz-opening" placeholder="e.g., 10000" min="0" step="0.01" required>
+              <div class="wizard-actions">
+                <button type="button" class="btn next-step">Next →</button>
+              </div>
+            </div>
+
+            <!-- Step 2: Purchases -->
+            <div class="wizard-step hidden" data-step="2">
+              <label for="wiz-purchases">🛒 Goods you bought (Purchases)</label>
+              <p class="example">Example: You bought more goods for ₦5,000 → 5000</p>
+              <input type="number" id="wiz-purchases" placeholder="e.g., 5000" min="0" step="0.01" required>
+              <div class="wizard-actions">
+                <button type="button" class="btn prev-step">← Back</button>
+                <button type="button" class="btn next-step">Next →</button>
+              </div>
+            </div>
+
+            <!-- Step 3: Sales -->
+            <div class="wizard-step hidden" data-step="3">
+              <label for="wiz-sales">💰 Money from selling goods (Sales)</label>
+              <p class="example">Example: Total cash you collected from customers: ₦25,000 → 25000</p>
+              <input type="number" id="wiz-sales" placeholder="e.g., 25000" min="0" step="0.01" required>
+              <div class="wizard-actions">
+                <button type="button" class="btn prev-step">← Back</button>
+                <button type="button" class="btn next-step">Next →</button>
+              </div>
+            </div>
+
+            <!-- Step 4: Expenses -->
+            <div class="wizard-step hidden" data-step="4">
+              <label for="wiz-expenses">🧾 Other expenses (Transport, rent, etc.)</label>
+              <p class="example">Example: You spent ₦2,000 on transport and ₦1,000 on electricity = 3000</p>
+              <input type="number" id="wiz-expenses" placeholder="e.g., 3000" min="0" step="0.01" required>
+              <div class="wizard-actions">
+                <button type="button" class="btn prev-step">← Back</button>
+                <button type="submit" class="btn primary">✨ Calculate Profit</button>
+              </div>
+            </div>
+          </form>
+
+          <!-- Result display -->
+          <div id="wizard-result" class="result-box hidden">
+            <h3>📊 Your Profit / Loss</h3>
+            <p id="wizard-profit-message"></p>
+            <button class="btn outline" id="save-wizard-to-pl">Save to Profit & Loss</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. CALCULATORS SECTION -->
+    <section id="calculators" class="tab-content">
+      <!-- Profit & Loss Calculator -->
+      <div class="card">
+        <h2><i class="fas fa-chart-line"></i> Trading Profit & Loss</h2>
+        <form id="pl-form">
+          <label>📦 Opening Stock <span class="hint">(Goods you had)</span></label>
+          <input type="number" id="pl-opening" placeholder="0" min="0" step="0.01" required>
+          
+          <label>🛒 Purchases <span class="hint">(Goods bought)</span></label>
+          <input type="number" id="pl-purchases" placeholder="0" min="0" step="0.01" required>
+          
+          <label>💰 Sales <span class="hint">(Money from selling)</span></label>
+          <input type="number" id="pl-sales" placeholder="0" min="0" step="0.01" required>
+          
+          <label>🧾 Expenses <span class="hint">(Transport, rent, etc.)</span></label>
+          <input type="number" id="pl-expenses" placeholder="0" min="0" step="0.01" required>
+          
+          <button type="submit" class="btn primary">Calculate</button>
+        </form>
+        <div id="pl-result" class="result-box hidden">
+          <p id="pl-message"></p>
+        </div>
+      </div>
+
+      <!-- Cash Book -->
+      <div class="card">
+        <h2><i class="fas fa-book"></i> Cash Book</h2>
+        <div class="cash-summary">
+          <p>💰 Current Balance: <strong id="cash-balance">₦0.00</strong></p>
+        </div>
+        <form id="cash-form">
+          <label>Type</label>
+          <select id="cash-type" required>
+            <option value="in">Cash In (Money Received)</option>
+            <option value="out">Cash Out (Money Paid)</option>
+          </select>
+          <label>Amount (₦)</label>
+          <input type="number" id="cash-amount" placeholder="0" min="0.01" step="0.01" required>
+          <label>Description</label>
+          <input type="text" id="cash-desc" placeholder="e.g., Sold shoes" required>
+          <button type="submit" class="btn">➕ Add Entry</button>
+        </form>
+        <div class="table-container">
+          <table id="cash-table">
+            <thead><tr><th>Date</th><th>Description</th><th>In</th><th>Out</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <button class="btn outline" id="clear-cash">Clear All</button>
+      </div>
+
+      <!-- Petty Cash Book -->
+      <div class="card">
+        <h2><i class="fas fa-coins"></i> Petty Cash</h2>
+        <div class="petty-summary">
+          <p>💵 Float: <input type="number" id="petty-float" placeholder="Starting amount" min="0" step="0.01" value="0"> <button class="btn small" id="set-float">Set</button></p>
+          <p>📉 Spent: <strong id="petty-spent">₦0.00</strong> · Remaining: <strong id="petty-remaining">₦0.00</strong></p>
+        </div>
+        <form id="petty-form">
+          <label>Amount (₦)</label>
+          <input type="number" id="petty-amount" placeholder="0" min="0.01" step="0.01" required>
+          <label>Description</label>
+          <input type="text" id="petty-desc" placeholder="e.g., Tea, transport" required>
+          <button type="submit" class="btn">➕ Add Expense</button>
+        </form>
+        <div class="table-container">
+          <table id="petty-table">
+            <thead><tr><th>Date</th><th>Description</th><th>Amount</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <button class="btn outline" id="clear-petty">Clear All</button>
+      </div>
+    </section>
+
+    <!-- 3. DASHBOARD SECTION -->
+    <section id="dashboard" class="tab-content">
+      <div class="card">
+        <h2><i class="fas fa-chart-bar"></i> Your Business Summary</h2>
+        <div class="dashboard-grid">
+          <div class="stat-card"><span>Total Sales</span><strong id="dash-sales">₦0</strong></div>
+          <div class="stat-card"><span>Total Expenses</span><strong id="dash-expenses">₦0</strong></div>
+          <div class="stat-card"><span>Profit / Loss</span><strong id="dash-profit">₦0</strong></div>
+          <div class="stat-card"><span>Petty Cash Left</span><strong id="dash-petty">₦0</strong></div>
+        </div>
+        <p class="help-text">Based on your last Profit & Loss calculation and petty cash.</p>
+      </div>
+    </section>
+
+    <!-- 4. AI ASSISTANT SECTION -->
+    <section id="ai" class="tab-content">
+      <div class="card ai-card">
+        <h2><i class="fas fa-robot"></i> Business Assistant (AI)</h2>
+        <p class="help-text">Ask anything: "Why am I not making profit?" or "How to attract customers?"</p>
+        <div id="chat-history" class="chat-box">
+          <div class="message bot">👋 Hello! I'm here to help with simple business advice. Ask me anything.</div>
+        </div>
+        <form id="ai-form">
+          <input type="text" id="ai-prompt" placeholder="Type your question..." required>
+          <button type="submit" class="btn primary" id="ai-send-btn"><i class="fas fa-paper-plane"></i> Ask</button>
+        </form>
+        <div id="ai-loading" class="loading hidden">🤖 Thinking...</div>
+        <div id="ai-error" class="error hidden"></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Scripts -->
+  <script type="module" src="script.js"></script>
+</body>
+</html>
